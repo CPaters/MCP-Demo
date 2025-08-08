@@ -1,0 +1,161 @@
+﻿@model List<MCPClient.Models.ChatMessage>
+@{
+    ViewData["Title"] = "MCP Chat";
+}
+
+<!-- Header across the top -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mt-3 mb-1 text-center" >🤖 MCP Demo: Hotels & Weather</h1>
+        </div>
+        <p class="text-center">
+            Welcome to the **Model Context Protocol (MCP)** demo!  This demo uses a mock API server and a local `gemma3` model via [Ollama](https://ollama.com/).
+        </p>
+    </div>
+    <div class="row" style="height: calc(100vh - 250px);">
+        <!-- Sidebar: 25% width, scrollable -->
+        <div class="col-12 col-md-3 border-end bg-white d-flex flex-column overflow-auto" style="min-width: 250px; max-width: 400px; height: 100%;">
+            <div class="p-3">
+                <div>
+                You can ask about:
+
+                <ul>
+                    <li> 📍 Hotel search and bookings</li>
+                    <li> 🌤️ Current weather, forecasts, and alerts</li>
+                </ul>
+                </div>
+                <button id="show-tools-btn" class="btn btn-secondary mb-3 w-100">Show Available Tools</button>
+                <div id="tools-list" class="mb-4"></div>
+                <hr />
+                <h5>💡 Example Queries</h5>
+                <ul>
+                    <li>
+                        <strong>Hotel Booking:</strong>
+                        <ul>
+                            <li>"Find hotels in Miami for 2 guests from tomorrow to next week"</li>
+                            <li>"Book hotel_002 for John Doe, email john@email.com"</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Weather:</strong>
+                        <ul>
+                            <li>"What's the weather in Denver?"</li>
+                            <li>"Show me the 5-day forecast for Chicago"</li>
+                            <li>"Any weather alerts for New York?"</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Bookings:</strong>
+                        <ul>
+                            <li>"Look up my booking with ID ABC12345"</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Chat: 75% width -->
+        <div class="col-12 col-md-9 d-flex flex-column" style="height: 100%;">
+            <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+                <h4 class="mt-3">💬 Chat</h4>
+                <div class="chat-container d-flex flex-column position-relative w-100" style="height: 65vh; max-width: 800px;">
+                    <div class="chat-area flex-grow-1 overflow-auto mb-3 p-2 border rounded bg-light">
+                        @foreach (var msg in Model)
+                        {
+                            <div class="mb-2">
+                                <strong>@(msg.Role == "user" ? "🧑 You" : "🤖 Assistant"):</strong>
+                                <div class="ms-3">@Html.Raw(msg.Content.Replace("\n", "<br />"))</div>
+                            </div>
+                        }
+                    </div>
+                    <div id="chat-spinner" class="spinner-overlay" style="display:none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <form method="post" class="mt-auto">
+                        <div class="d-flex align-items-end">
+                            <textarea name="userInput" class="form-control me-2" rows="3" placeholder="Ask about hotels or weather..." style="resize: none; flex: 1 1 auto;"></textarea>
+                            <button class="btn btn-primary" type="submit" style="white-space: nowrap; height: 100%;">Ask</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.spinner-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const textarea = document.querySelector('textarea[name="userInput"]');
+        const form = textarea.closest('form');
+        const spinner = document.getElementById('chat-spinner');
+        const showToolsBtn = document.getElementById('show-tools-btn');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        // Set focus on page load
+        if (textarea) {
+            textarea.focus();
+        }
+
+        textarea.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                spinner.style.display = 'flex';
+                textarea.readOnly = true;
+                submitButton.disabled = true;
+                showToolsBtn.disabled = true;
+                form.submit();
+            }
+        });
+
+        form.addEventListener('submit', function () {
+            spinner.style.display = 'flex';
+            textarea.readOnly = true;
+            submitButton.disabled = true;
+            showToolsBtn.disabled = true;
+        });
+
+        // Optional: Refocus after losing focus (e.g., user clicks away)
+        textarea.addEventListener('blur', function () {
+            setTimeout(function () {
+                if (!textarea.disabled) {
+                    textarea.focus();
+                }
+            }, 100);
+        });
+
+        // Show Tools button click handler
+        showToolsBtn.addEventListener('click', function () {
+            textarea.readOnly = true;
+            submitButton.disabled = true;
+            showToolsBtn.disabled = true;
+            spinner.style.display = 'flex';
+
+            fetch('@Url.Action("GetTools", "Chat")')
+                .then(response => response.json())
+                .then(data => {
+                    const list = data.map(t => `<li>${t}</li>`).join('');
+                    document.getElementById('tools-list').innerHTML = `<ul>${list}</ul>`;
+                })
+                .finally(() => {
+                    textarea.readOnly = false;
+                    submitButton.disabled = false;
+                    showToolsBtn.disabled = false;
+                    spinner.style.display = 'none';
+                });
+        });
+    });
+</script>

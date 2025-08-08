@@ -1,0 +1,21 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/mcp-demo-csharp/MCPDemo/.vs
+/mcp-demo-csharp/MCPDemo/MCPClient/bin/Debug/net8.0
+/mcp-demo-csharp/MCPDemo/MCPClient/obj
+/mcp-demo-python/.claude
+/mcp-demo-python/__pycache__
+/mcp-demo-python/mcp_server.py
+/mcp-demo-python/mcp_server_refactored old.py
+/mcp-demo-python/mcp_server_refactored.py
+/mcp-demo-python/simple_client.py
+/mcp-demo-python/simple_server.py
+/mcp-demo-python/streamlit_client.py
+/mcp-demo-python/streamlit_client_simpler.py
+/mcp-demo-python/test_mcp.py
+/mcp-demo-python/test_simple_server.py
+/mcp-demo-python/.vs/mcp-demo-python/CopilotIndices/17.14.939.21063
+/mcp-demo-python/.vs/mcp-demo-python/FileContentIndex
+/mcp-demo-python/.vs
