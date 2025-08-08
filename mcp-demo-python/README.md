@@ -70,15 +70,23 @@ The demo consists of four main layers:
    git clone <your-repo> mcp-demo-python
    cd mcp-demo-python
    ```
+2. **Create your environement file**
+ Before starting the MCP server, create and activate a Python virtual environment:
 
-2. **Install Python dependencies**
+```bash
+python -m venv venv
+source venv/bin/activate
+# On Windows: venv\Scripts\activate
+```
+
+3. **Install Python dependencies**
 
    ```bash
    .\.venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-3. **Verify Ollama is working**
+4. **Verify Ollama is working**
    ```bash
    ollama list
    ```
