@@ -1,6 +1,6 @@
 # MCP Demo: Hotels & Weather
 
-This project is a demonstration of the **Model Context Protocol (MCP)**, showcasing how a conversational AI can interact with multiple APIs to provide useful services. The demo uses a local [gemma3](https://ollama.com/library/gemma3) language model (downloaded and run via [Ollama](https://ollama.com/)) and integrates with two mock APIs: a Hotel API and a Weather API.
+This project is a demonstration of the **Model Context Protocol (MCP)**, showcasing how a conversational AI can interact with multiple APIs to provide useful services. The demo uses a local [gemma3](https://ollama.com/library/gemma3) language model (downloaded and run via [Ollama](https://ollama.com/)) and integrates with an MCP server that wraps two mock APIs - weather api and a hotel api.  The MCP server is written in python and so are the APIs.  You can find them in the folder mcp-demo-python.  
 
 ## Features
 
@@ -26,13 +26,27 @@ Before running this project, ensure the following are set up and running **local
      ```
    - By default, Ollama runs on `http://localhost:11434`.
 
-2. **Hotel API**
-   - Start the Hotel API MCP server (mock or real).
-   - The project assumes it is available at a hardcoded `localhost` URL.
+2. **MCP Server for the Hotel and Weather API**
+   - Start the mcp server by opening a terminal and running the command below:
 
-3. **Weather API**
-   - Start the Weather API MCP server (mock or real).
-   - The project assumes it is available at a hardcoded `localhost` URL.
+```bash
+python mcp_server_fastmcp.py
+```
+
+You should see:
+
+```
+🚀 Starting Hotel & Weather API Server...
+📡 Server will be available at http://localhost:5000/mcp
+🛠️ Available endpoints:
+   GET /tools - List available tools
+   POST /call/<tool_name> - Call a specific tool
+   GET /health - Health check
+ * Running on all addresses (0.0.0.0)
+
+```
+
+   - The project assumes it will be available at a hardcoded `localhost` URL.
 
 > **Note:** The URLs for the APIs and Ollama are currently hardcoded in the project and must be running on your local machine.
 
