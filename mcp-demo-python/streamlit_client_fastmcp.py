@@ -117,8 +117,8 @@ Example responses:
         # Normalize structure: if tool and flat params, wrap them
         mcp_tool = parsed.get("tool")
         if mcp_tool and not isinstance(parsed.get("params"), dict):
-            params = {k: v for k, v in parsed.items() if k != "tool"}
-            return {"tool": mcp_tool, "params": params}
+            parameters = {k: v for k, v in parsed.items() if k != "tool"}
+            return {"tool": mcp_tool, "params": parameters}
         return parsed
     
     return {"tool": None, "params": {}}

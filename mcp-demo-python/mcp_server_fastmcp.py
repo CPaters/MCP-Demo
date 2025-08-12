@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing import Annotated
 from fastmcp import FastMCP
 import httpx
@@ -83,8 +83,8 @@ def _format_weather_alerts(data: dict) -> str:
     if not data.get("success"):
         return f"❌ {data.get('error', 'Unknown error')}"
     
-    lines = [f"⚠️ **Weather Alerts for {result['location']}** ({result['alert_count']} active)\n\n"]
-    for alert in result["alerts"]:
+    lines = [f"⚠️ **Weather Alerts for {data['location']}** ({data['alert_count']} active)\n\n"]
+    for alert in data["alerts"]:
         severity_emoji = {"Minor": "🟡", "Moderate": "🟠", "Severe": "🔴"}.get(alert["severity"], "⚠️")
         lines.append(f"{severity_emoji} **{alert['type']}** ({alert['severity']})\n")
         lines.append(f"   📄 {alert['description']}\n\n")
