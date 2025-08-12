@@ -20,8 +20,7 @@ The demo consists of four main layers:
 
 ### 1. **Data Layer** - Mock APIs
 
-- **`hotel_api.py`** - Simulates hotel booking system with inventory management
-- **`weather_api.py`** - Generates realistic weather data with seasonal variations
+- **`hotel_and_weather_api.py`** - APIs for hotel and weather function.Simulates hotel booking system with inventory management. Generates realistic weather data with seasonal variations. Uses FastAPI
 
 ### 2. **Protocol Layer** - MCP Server
 
@@ -94,10 +93,30 @@ source venv/bin/activate
 ### Running the Demo
 
 **⚠️ Important: You need to start the backend API server BEFORE running the Streamlit chat application.**
-
 #### Step 1: Start the Backend API Server
 
 Open a **first terminal** and run:
+
+```bash
+uvicorn hotel_and_weather_api:app --port 8000
+```
+
+You should see:
+
+```
+INFO:     Started server process [30000]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
+```
+
+**Keep this terminal running** - the APIs need to stay active for the chat application to work.
+
+
+#### Step 2: Start the MCP Server
+
+Open a **second terminal** and run:
 
 ```bash
 python mcp_server_fastmcp.py
@@ -108,17 +127,42 @@ You should see:
 ```
 🚀 Starting Hotel & Weather API Server...
 📡 Server will be available at http://localhost:5000/mcp
-🛠️ Available endpoints:
-   GET /tools - List available tools
-   POST /call/<tool_name> - Call a specific tool
-   GET /health - Health check
- * Running on all addresses (0.0.0.0)
 
+
+╭─ FastMCP 2.0 ──────────────────────────────────────────────────────────────╮
+│                                                                            │
+│        _ __ ___ ______           __  __  _____________    ____    ____     │
+│       _ __ ___ / ____/___ ______/ /_/  |/  / ____/ __ \  |___ \  / __ \    │
+│      _ __ ___ / /_  / __ `/ ___/ __/ /|_/ / /   / /_/ /  ___/ / / / / /    │
+│     _ __ ___ / __/ / /_/ (__  ) /_/ /  / / /___/ ____/  /  __/_/ /_/ /     │
+│    _ __ ___ /_/    \__,_/____/\__/_/  /_/\____/_/      /_____(_)____/      │
+│                                                                            │
+│                                                                            │
+│                                                                            │
+│    🖥️  Server name:     Hotel & Weather API MCP Server                      │
+│    📦 Transport:       Streamable-HTTP                                     │
+│    🔗 Server URL:      http://127.0.0.1:5000/mcp/                          │
+│                                                                            │
+│    📚 Docs:            https://gofastmcp.com                               │
+│    🚀 Deploy:          https://fastmcp.cloud                               │
+│                                                                            │
+│    🏎️  FastMCP version: 2.11.0                                              │
+│    🤝 MCP version:     1.12.3                                              │
+│                                                                            │
+╰────────────────────────────────────────────────────────────────────────────╯
+
+
+[08/12/25 15:23:58] INFO     Starting MCP server 'Hotel & Weather API MCP Server' with transport 'http' on                         server.py:1519
+                             http://127.0.0.1:5000/mcp/                                                                                          
+INFO:     Started server process [22900]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:5000 (Press CTRL+C to quit)
 ```
 
-**Keep this terminal running** - the APIs need to stay active for the chat application to work.
+**Keep this terminal running**
 
-#### Step 2: Start the Streamlit Chat Application
+#### Step 3: Start the Streamlit Chat Application
 
 Open a **second terminal** and run:
 
@@ -141,23 +185,13 @@ streamlit run streamlit_client_fastmcp.py
 
 **If you get connection errors:**
 
-- Make sure the API server (Step 1) is running first
-- Check that `http://localhost:5000/health` returns a response
+- Make sure the API and MCP servers (Step 1 & 2) is running first
+- Check that `http://localhost:5000/mcp/hotel/health` returns a response
 - Ensure no other applications are using port 5000
-
-**For testing the APIs independently:**
-
-```bash
-# Test hotel API
-python -c "from hotel_api import HotelAPI; api = HotelAPI(); print(api.search_hotels('Miami', '2024-03-01', '2024-03-03', 2))"
-
-# Test weather API
-python -c "from weather_api import WeatherAPI; api = WeatherAPI(); print(api.get_current_weather('Miami'))"
-```
 
 ## 🛠️ Detailed Component Analysis
 
-### 1. Hotel Booking API (`hotel_api.py`)
+### 1. Hotel Booking API (`hotel_and_weather_api.py`)
 
 **Purpose**: Simulates a complete hotel reservation system with realistic business logic.
 
@@ -198,7 +232,7 @@ python -c "from weather_api import WeatherAPI; api = WeatherAPI(); print(api.get
 - **City Center Inn** (Chicago) - Budget-friendly downtown, $179.99/night
 - **Luxury Suites** (Los Angeles) - High-end luxury, $399.99/night
 
-### 2. Weather API (`weather_api.py`)
+### 2. Weather API (`hotel_and_weather_api.py`)
 
 **Purpose**: Provides weather data with realistic geographical and seasonal variation.
 
@@ -441,20 +475,6 @@ ollama pull codellama:7b   # Better for technical queries
 - Try a smaller model: `ollama pull gemma:2b`
 - Ensure sufficient RAM for the model
 
-### Debug Mode
-
-Run components separately for debugging:
-
-```bash
-# Test hotel API
-python -c "from hotel_api import HotelAPI; api = HotelAPI(); print(api.search_hotels('Miami', '2024-03-01', '2024-03-03', 2))"
-
-# Test weather API
-python -c "from weather_api import WeatherAPI; api = WeatherAPI(); print(api.get_current_weather('Miami'))"
-
-# Test MCP server
-python mcp_server.py
-```
 
 ## 📁 Complete File Structure
 
@@ -462,8 +482,7 @@ python mcp_server.py
 mcp-demo/
 ├── 📄 README.md                        # This comprehensive documentation
 ├── 📄 requirements.txt                 # Python dependencies
-├── 🏨 hotel_api.py                     # Hotel booking API with 5 sample hotels
-├── 🌤️ weather_api.py                   # Weather service with forecasts & alerts
+├── 🏨 hotel_and_weather_api.py         # Hotel booking API with 5 sample hotels. Weather service with forecasts and alerts
 ├── 🖥️ mcp_server_fastmcp.py            # Full MCP protocol server (Python 3.10+)
 └── 🧪 streamlit_client_fastmcp.py      # Full MCP client (requires Python 3.10+)
 ```
