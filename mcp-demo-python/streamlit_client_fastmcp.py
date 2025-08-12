@@ -175,7 +175,7 @@ st.sidebar.subheader("💡 Example Queries")
 st.sidebar.markdown("""
 **Hotel Booking:**
 - "Find hotels in Miami for 2 guests from tomorrow to next week"
-- "Book hotel_002 for John Doe, email john@email.com"
+- "Book hotel_002 for John Doe for this weekend for 2 people, email john@email.com"
 
 **Weather:**
 - "What's the weather in Denver?"
